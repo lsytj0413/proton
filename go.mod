@@ -1,4 +1,4 @@
-module github.com/lsytj0413/golang-project-template
+module github.com/lsytj0413/proton
 
 go 1.20
 

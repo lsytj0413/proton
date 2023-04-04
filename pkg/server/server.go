@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/lsytj0413/golang-project-template/pb"
-	"github.com/lsytj0413/golang-project-template/pkg/utils"
+	"github.com/lsytj0413/proton/pb"
+	"github.com/lsytj0413/proton/pkg/utils"
 )
 
 // nolint

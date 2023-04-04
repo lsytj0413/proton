@@ -24,10 +24,10 @@
 #
 
 # This repo's root import path (under GOPATH).
-ROOT := github.com/lsytj0413/golang-project-template
+ROOT := github.com/lsytj0413/proton
 
 # Module name.
-NAME := golang-project-template
+NAME := proton
 
 # Container image prefix and suffix added to targets.
 # The final built images are:

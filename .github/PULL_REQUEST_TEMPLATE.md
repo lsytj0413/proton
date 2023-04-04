@@ -36,7 +36,7 @@ NONE
  
 <!--  Thanks for sending a pull request! Here are some tips:
 
-1. https://github.com/lsytj0413/golang-project-template/blob/master/doc/review_conventions.md      <-- what is the review process looks like
+1. https://github.com/lsytj0413/proton/blob/master/doc/review_conventions.md      <-- what is the review process looks like
 2. https://www.conventionalcommits.org/en/v1.0.0/  <-- how to structure your git commit
 
 Other tips:
