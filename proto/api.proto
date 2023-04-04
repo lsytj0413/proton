@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option go_package = "./;pb";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+message HelloRequest {
+    // Name is the user's name which send this request.
+    string Name = 1 [json_name="name"];
+}
+
+message HelloResponse {
+    // Message is the text responsd.
+    string Message = 1;
+
+    // CurrentTime is the timestamp which message generated.
+    google.protobuf.Timestamp CurrentTime = 2;
+}
+
+service HelloService {
+    rpc Hello(HelloRequest) returns (HelloResponse) {
+        option (google.api.http) = {
+            post: "/v1/hello",
+            body: "*"
+        };
+    }
+}
