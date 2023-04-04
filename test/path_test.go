@@ -14,6 +14,6 @@ func TestCurrentProjectPath(t *testing.T) {
 
 		// NOTE: the '/code' path is used with code pipeline.
 		// When code running in the pipeline, the codebase will copy to /home/code directory.
-		g.Expect(path).To(gomega.MatchRegexp("(/golang-project-template$)|(/code$)"))
+		g.Expect(path).To(gomega.MatchRegexp("(/proton$)|(/code$)"))
 	})
 }
