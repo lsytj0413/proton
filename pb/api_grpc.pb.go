@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// HelloServiceClient is the client API for HelloService service.
+// AllocerServiceClient is the client API for AllocerService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HelloServiceClient interface {
-	Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+type AllocerServiceClient interface {
+	Alloc(ctx context.Context, in *AllocRequest, opts ...grpc.CallOption) (*AllocResponse, error)
 }
 
-type helloServiceClient struct {
+type allocerServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHelloServiceClient(cc grpc.ClientConnInterface) HelloServiceClient {
-	return &helloServiceClient{cc}
+func NewAllocerServiceClient(cc grpc.ClientConnInterface) AllocerServiceClient {
+	return &allocerServiceClient{cc}
 }
 
-func (c *helloServiceClient) Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
-	out := new(HelloResponse)
-	err := c.cc.Invoke(ctx, "/pb.HelloService/Hello", in, out, opts...)
+func (c *allocerServiceClient) Alloc(ctx context.Context, in *AllocRequest, opts ...grpc.CallOption) (*AllocResponse, error) {
+	out := new(AllocResponse)
+	err := c.cc.Invoke(ctx, "/pb.AllocerService/Alloc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// HelloServiceServer is the server API for HelloService service.
-// All implementations must embed UnimplementedHelloServiceServer
+// AllocerServiceServer is the server API for AllocerService service.
+// All implementations must embed UnimplementedAllocerServiceServer
 // for forward compatibility
-type HelloServiceServer interface {
-	Hello(context.Context, *HelloRequest) (*HelloResponse, error)
-	mustEmbedUnimplementedHelloServiceServer()
+type AllocerServiceServer interface {
+	Alloc(context.Context, *AllocRequest) (*AllocResponse, error)
+	mustEmbedUnimplementedAllocerServiceServer()
 }
 
-// UnimplementedHelloServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedHelloServiceServer struct {
+// UnimplementedAllocerServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedAllocerServiceServer struct {
 }
 
-func (UnimplementedHelloServiceServer) Hello(context.Context, *HelloRequest) (*HelloResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+func (UnimplementedAllocerServiceServer) Alloc(context.Context, *AllocRequest) (*AllocResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Alloc not implemented")
 }
-func (UnimplementedHelloServiceServer) mustEmbedUnimplementedHelloServiceServer() {}
+func (UnimplementedAllocerServiceServer) mustEmbedUnimplementedAllocerServiceServer() {}
 
-// UnsafeHelloServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HelloServiceServer will
+// UnsafeAllocerServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AllocerServiceServer will
 // result in compilation errors.
-type UnsafeHelloServiceServer interface {
-	mustEmbedUnimplementedHelloServiceServer()
+type UnsafeAllocerServiceServer interface {
+	mustEmbedUnimplementedAllocerServiceServer()
 }
 
-func RegisterHelloServiceServer(s grpc.ServiceRegistrar, srv HelloServiceServer) {
-	s.RegisterService(&HelloService_ServiceDesc, srv)
+func RegisterAllocerServiceServer(s grpc.ServiceRegistrar, srv AllocerServiceServer) {
+	s.RegisterService(&AllocerService_ServiceDesc, srv)
 }
 
-func _HelloService_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _AllocerService_Alloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AllocRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HelloServiceServer).Hello(ctx, in)
+		return srv.(AllocerServiceServer).Alloc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.HelloService/Hello",
+		FullMethod: "/pb.AllocerService/Alloc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloServiceServer).Hello(ctx, req.(*HelloRequest))
+		return srv.(AllocerServiceServer).Alloc(ctx, req.(*AllocRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// HelloService_ServiceDesc is the grpc.ServiceDesc for HelloService service.
+// AllocerService_ServiceDesc is the grpc.ServiceDesc for AllocerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HelloService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.HelloService",
-	HandlerType: (*HelloServiceServer)(nil),
+var AllocerService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.AllocerService",
+	HandlerType: (*AllocerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Hello",
-			Handler:    _HelloService_Hello_Handler,
+			MethodName: "Alloc",
+			Handler:    _AllocerService_Alloc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

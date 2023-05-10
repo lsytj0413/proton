@@ -7,24 +7,36 @@ package pb;
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
-message HelloRequest {
-    // Name is the user's name which send this request.
-    string Name = 1 [json_name="name"];
+// AllocRequest represent the requests to perform when user want to 
+// alloc the next identifier.
+message AllocRequest {
+    // Key is the business identifier used to isolate different id sequence. Same
+    // key will share same id sequence, and they will never got duplicate id from allocer; 
+    // different key may got duplicate id.
+    // The key name structure is: {schema}://{tenant}/{namespace}/{key}
+    // - schema: stands for different alloc type, only seq is support for now
+    // - tenant: basic unit of categorization for key
+    // - namespace: administrative unit nomenclature within a tenant
+    // - key: business identifier used to isolate idfferent id sequence
+    string Key = 1;
 }
 
-message HelloResponse {
-    // Message is the text responsd.
-    string Message = 1;
+// AllocResponse represent the response when AllocRequest is successed.
+message AllocResponse {
+    // Key is the business identifier with request.
+    string Key = 1;
 
-    // CurrentTime is the timestamp which message generated.
-    google.protobuf.Timestamp CurrentTime = 2;
+    // ID is the alloced id which associated to key.
+    uint64 ID = 2;
+
+    // NodeID is the allocer's id which served this request.
+    uint64 NodeID = 3;
+
+    // ThrottleTimeInMilliSeconds is the duration in milliseconds for which the request
+    // was throttled due to validation.
+    uint64 ThrottleTimeInMilliSeconds = 4;
 }
 
-service HelloService {
-    rpc Hello(HelloRequest) returns (HelloResponse) {
-        option (google.api.http) = {
-            post: "/v1/hello",
-            body: "*"
-        };
-    }
+service AllocerService {
+    rpc Alloc(AllocRequest) returns (AllocResponse);
 }

@@ -3,51 +3,106 @@ package server
 
 import (
 	"context"
-	"fmt"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"hash/crc32"
+	"sync"
 
 	"github.com/lsytj0413/proton/pb"
-	"github.com/lsytj0413/proton/pkg/utils"
 )
 
 // nolint
 type HelloServer struct {
-	pb.UnimplementedHelloServiceServer
+	pb.UnsafeAllocerServiceServer
+
+	m metadataStore
 }
+
+var (
+	_ pb.AllocerServiceServer = (*HelloServer)(nil)
+)
 
 // nolint
 func NewHelloServer() *HelloServer {
-	return &HelloServer{}
+	return &HelloServer{
+		m: &mockMetadataStore{
+			b: &Bundle{
+				MaxSequence: 10,
+				initialSeq:  0,
+			},
+		},
+	}
 }
 
 // nolint
-func (s *HelloServer) Hello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloResponse, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		//nolint
-		return nil, fmt.Errorf("MUST specify incoming metadata")
+type Bundle struct {
+	ID       uint64
+	Rivision uint64
+
+	Min uint32
+	Max uint32
+
+	MaxSequence uint64
+
+	initialSeq uint64
+	kk         map[string]uint64
+	l          sync.Mutex
+}
+
+func (b *Bundle) Alloc(k string) (uint64, error) {
+	b.l.Lock()
+	defer b.l.Unlock()
+
+	if b.kk == nil {
+		b.kk = map[string]uint64{}
 	}
 
-	requestID := func() string {
-		ids := md.Get("Request-Id")
-		if len(ids) > 0 {
-			return ids[0]
-		}
-
-		return ""
-	}()
-
-	if err := grpc.SendHeader(ctx, metadata.New(map[string]string{
-		"Request-Id": "r_" + requestID,
-	})); err != nil {
-		return nil, fmt.Errorf("cannot send header for response, %w", err)
+	if _, ok := b.kk[k]; !ok {
+		b.kk[k] = b.initialSeq
 	}
 
-	return &pb.HelloResponse{
-		Message:     utils.GenerateResponseMessage(in.Name),
-		CurrentTime: timestamppb.Now(),
+	v := b.kk[k]
+	if v < b.MaxSequence {
+		v++
+		b.kk[k] = v
+		return v, nil
+	}
+
+	b.MaxSequence += 10
+	v++
+	b.kk[k] = v
+	return v, nil
+}
+
+type metadataStore interface {
+	FindBundle(k uint32) (*Bundle, error)
+}
+
+type mockMetadataStore struct {
+	b *Bundle
+}
+
+func (m *mockMetadataStore) FindBundle(k uint32) (*Bundle, error) {
+	return m.b, nil
+}
+
+// Alloc ...
+func (s *HelloServer) Alloc(ctx context.Context, in *pb.AllocRequest) (*pb.AllocResponse, error) {
+	// Split Key's structure
+	k := crc32.ChecksumIEEE([]byte(in.Key))
+	_ = k
+
+	// Validate is current key's bundle belong to this node
+	b, err := s.m.FindBundle(k)
+	if err != nil {
+		return nil, err
+	}
+
+	vv, err := b.Alloc(in.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.AllocResponse{
+		Key: in.Key,
+		ID:  vv,
 	}, nil
 }

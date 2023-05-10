@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_HelloService_Hello_0(ctx context.Context, marshaler runtime.Marshaler, client HelloServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HelloRequest
+func request_AllocerService_Alloc_0(ctx context.Context, marshaler runtime.Marshaler, client AllocerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AllocRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -43,13 +43,13 @@ func request_HelloService_Hello_0(ctx context.Context, marshaler runtime.Marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.Hello(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Alloc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_HelloService_Hello_0(ctx context.Context, marshaler runtime.Marshaler, server HelloServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HelloRequest
+func local_request_AllocerService_Alloc_0(ctx context.Context, marshaler runtime.Marshaler, server AllocerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AllocRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -60,18 +60,18 @@ func local_request_HelloService_Hello_0(ctx context.Context, marshaler runtime.M
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.Hello(ctx, &protoReq)
+	msg, err := server.Alloc(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-// RegisterHelloServiceHandlerServer registers the http handlers for service HelloService to "mux".
-// UnaryRPC     :call HelloServiceServer directly.
+// RegisterAllocerServiceHandlerServer registers the http handlers for service AllocerService to "mux".
+// UnaryRPC     :call AllocerServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterHelloServiceHandlerFromEndpoint instead.
-func RegisterHelloServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server HelloServiceServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAllocerServiceHandlerFromEndpoint instead.
+func RegisterAllocerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AllocerServiceServer) error {
 
-	mux.Handle("POST", pattern_HelloService_Hello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AllocerService_Alloc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -79,12 +79,12 @@ func RegisterHelloServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.HelloService/Hello", runtime.WithHTTPPathPattern("/v1/hello"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.AllocerService/Alloc", runtime.WithHTTPPathPattern("/pb.AllocerService/Alloc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_HelloService_Hello_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AllocerService_Alloc_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -92,16 +92,16 @@ func RegisterHelloServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_HelloService_Hello_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AllocerService_Alloc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterHelloServiceHandlerFromEndpoint is same as RegisterHelloServiceHandler but
+// RegisterAllocerServiceHandlerFromEndpoint is same as RegisterAllocerServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterHelloServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterAllocerServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
@@ -121,41 +121,41 @@ func RegisterHelloServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.S
 		}()
 	}()
 
-	return RegisterHelloServiceHandler(ctx, mux, conn)
+	return RegisterAllocerServiceHandler(ctx, mux, conn)
 }
 
-// RegisterHelloServiceHandler registers the http handlers for service HelloService to "mux".
+// RegisterAllocerServiceHandler registers the http handlers for service AllocerService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterHelloServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterHelloServiceHandlerClient(ctx, mux, NewHelloServiceClient(conn))
+func RegisterAllocerServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterAllocerServiceHandlerClient(ctx, mux, NewAllocerServiceClient(conn))
 }
 
-// RegisterHelloServiceHandlerClient registers the http handlers for service HelloService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "HelloServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "HelloServiceClient"
+// RegisterAllocerServiceHandlerClient registers the http handlers for service AllocerService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AllocerServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AllocerServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "HelloServiceClient" to call the correct interceptors.
-func RegisterHelloServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client HelloServiceClient) error {
+// "AllocerServiceClient" to call the correct interceptors.
+func RegisterAllocerServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AllocerServiceClient) error {
 
-	mux.Handle("POST", pattern_HelloService_Hello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AllocerService_Alloc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.HelloService/Hello", runtime.WithHTTPPathPattern("/v1/hello"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.AllocerService/Alloc", runtime.WithHTTPPathPattern("/pb.AllocerService/Alloc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_HelloService_Hello_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AllocerService_Alloc_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_HelloService_Hello_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AllocerService_Alloc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -163,9 +163,9 @@ func RegisterHelloServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_HelloService_Hello_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "hello"}, ""))
+	pattern_AllocerService_Alloc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"pb.AllocerService", "Alloc"}, ""))
 )
 
 var (
-	forward_HelloService_Hello_0 = runtime.ForwardResponseMessage
+	forward_AllocerService_Alloc_0 = runtime.ForwardResponseMessage
 )
